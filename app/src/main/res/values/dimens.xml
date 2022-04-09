@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--search screen-->
+    <dimen name="search_screen_layout_padding">8dp</dimen>
+    <dimen name="search_screen_search_bar_horizontal_padding">8dp</dimen>
+    <dimen name="search_screen_card_top_padding">24dp</dimen>
+    <dimen name="search_screen_card_start_padding">8dp</dimen>
+    <dimen name="search_screen_card_end_padding">8dp</dimen>
+    <dimen name="search_screen_card_title_text_size">15sp</dimen>
+    <dimen name="search_screen_card_title_bottom_padding">12dp</dimen>
+    <dimen name="search_screen_card_width">90dp</dimen>
+    <dimen name="search_screen_card_height">90dp</dimen>
+    <dimen name="search_screen_card_item_end_padding">16dp</dimen>
+    <dimen name="search_screen_card_radius">8dp</dimen>
+    <dimen name="search_screen_show_card_top_padding">24dp</dimen>
+    <dimen name="search_screen_show_card_bottom_padding">0dp</dimen>
+    <dimen name="search_screen_show_card_title_text_size">15sp</dimen>
+    <dimen name="search_screen_show_card_title_start_padding">8dp</dimen>
+    <dimen name="search_screen_show_card_title_end_padding">8dp</dimen>
+    <dimen name="search_screen_show_card_title_bottom_padding">16dp</dimen>
+    <dimen name="search_screen_show_card_vertical_grid_layout_height">300dp</dimen>
+    <dimen name="search_screen_show_card_image_height">100dp</dimen>
+    <dimen name="search_screen_show_card_image_bottom_padding">16dp</dimen>
+    <dimen name="search_screen_show_card_image_start_padding">8dp</dimen>
+    <dimen name="search_screen_show_card_image_end_padding">8dp</dimen>
+    <dimen name="search_screen_show_card_image_radius">8dp</dimen>
+    <dimen name="search_screen_cast_card_top_padding">8dp</dimen>
+    <dimen name="search_screen_cast_card_start_padding">8dp</dimen>
+    <dimen name="search_screen_cast_card_end_padding">8dp</dimen>
+    <dimen name="search_screen_cast_card_title_text_size">15sp</dimen>
+    <dimen name="search_screen_cast_card_title_text_bottom_padding">16dp</dimen>
+    <dimen name="search_screen_cast_card_item_width">100dp</dimen>
+    <dimen name="search_screen_cast_card_item_height">140dp</dimen>
+    <dimen name="search_screen_cast_card_image_end_padding">16dp</dimen>
+    <dimen name="search_screen_cast_card_image_bottom_padding">24dp</dimen>
+    <dimen name="search_screen_cast_card_image_radius">8dp</dimen>
+    <dimen name="search_screen_failed_text_size">17sp</dimen>
+    <dimen name="search_screen_failed_text_horizontal_padding">68dp</dimen>
+    <dimen name="search_screen_failed_text_bottom_padding">24dp</dimen>
+    <dimen name="search_icon_size">68dp</dimen>
+    <dimen name="user_detail_screen_card_height">360dp</dimen>
+    <dimen name="user_detail_screen_card_radius">50dp</dimen>
+
+    <dimen name="all_pages_padding">16dp</dimen>
+    <dimen name="ic_back_size">16dp</dimen>
+    <!-- navigation top bar -->
+    <dimen name="topBar_height">54dp</dimen>
+    <dimen name="ic_navigate_padding_end">8dp</dimen>
+    <dimen name="topBar_title_text_size">14sp</dimen>
+    <dimen name="topBar_action_button_padding_horizontal">10dp</dimen>
+
+</resources>

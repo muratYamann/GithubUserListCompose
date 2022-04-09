@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">GithubUserListCompose</string>
+    <string name="app_name">Github User</string>
+
+    <!--search screen-->
+    <string name="search_screen_genre_card_title">En Popüler Türler</string>
+    <string name="search_screen_search_bar_placeholder_text">Search</string>
+    <string name="search_failed_text">Aradığınızı içerik bulunamadı. Tekrar deneyin veya türlere göre keşfedin</string>
+    <string name="dialog_ok">OK</string>
+
 </resources>
