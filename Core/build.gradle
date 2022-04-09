@@ -14,6 +14,7 @@ android {
         minSdk 25
         targetSdk 32
 
+        buildConfigField "String", "BASE_URL", "\"https://api.github.com/\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }

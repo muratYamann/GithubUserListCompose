@@ -17,7 +17,6 @@ android {
         versionCode 1
         versionName "1.0"
 
-
         buildConfigField "String", "BASE_URL", "\"https://api.github.com/\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -54,4 +53,5 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(":core")
+    implementation project(":ui")
 }

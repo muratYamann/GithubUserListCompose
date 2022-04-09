@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "GithubUserListCompose"
 include ':app'
 include ':core'
+include ':ui'
