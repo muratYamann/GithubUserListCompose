@@ -94,15 +94,16 @@ fun UserResultRowCard(
         cells = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
-            .clickable(enabled = true) {
-                navController.navigate(Routes.UserDetailScreen.routes)
-            })
+    )
     {
         items(count = userList.size, itemContent = { itemIndex ->
             Card(
                 backgroundColor = colorResource(id = R.color.github_favorite_card_color),
                 elevation = 8.dp,
                 modifier = Modifier
+                    .clickable(enabled = true) {
+                        navController.navigate(Routes.UserDetailScreen.itemId(userList[itemIndex].username))
+                    }
                     .fillMaxWidth()
                     .animateItemPlacement()
                     .wrapContentHeight()

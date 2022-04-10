@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import com.trt.international.core.DataMapper
 import com.trt.international.core.model.UserDetail
 import com.trt.international.githubuserlistcompose.R
+import com.trt.international.githubuserlistcompose.customviews.*
 import com.trt.international.githubuserlistcompose.screen.detail.viewmodel.DetailViewModel
 
 @Composable
@@ -53,12 +54,12 @@ fun UserDetailContent(
 ) {
 
     userDetailViewModel.state.observeAsState().value?.let {
-        com.trt.international.githubuserlistcompose.customviews.CircularProgressBar(isDisplayed = it)
+       CircularProgressBar(isDisplayed = it)
     }
 
     userDetailViewModel.error.observeAsState().value?.let {
         if (it.isNotEmpty()) {
-            com.trt.international.githubuserlistcompose.customviews.CircularProgressBar(isDisplayed = false)
+         CircularProgressBar(isDisplayed = false)
         }
     }
 
@@ -93,8 +94,7 @@ fun SearchFailedItem() {
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromResource(
+        CustomImageViewFromResource(
             modifier = Modifier.size(dimensionResource(id = R.dimen.search_icon_size)),
             image = R.drawable.icons_search
         )
@@ -148,7 +148,7 @@ fun UserResultRowCard(
                 contentAlignment = Alignment.BottomEnd
             ) {
 
-                com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromURL(
+               CustomImageViewFromURL(
                     modifier = Modifier
                         .clickable(enabled = true) {
                             isClickedProfileIcon.value = true
@@ -161,9 +161,8 @@ fun UserResultRowCard(
                 )
 
                 if (isClickedProfileIcon.value) {
-                    com.trt.international.githubuserlistcompose.customviews.CustomToast(message = "image clicked")
                     Dialog(onDismissRequest = { isClickedProfileIcon.value = false }) {
-                        com.trt.international.githubuserlistcompose.customviews.CustomDialogUI(
+                       CustomDialogUI(
                             openDialogCustom = isClickedProfileIcon,
                             image = userItem.avatarUrl!!
                         )
@@ -173,7 +172,7 @@ fun UserResultRowCard(
 
                 val (isChecked, setChecked) = remember { mutableStateOf(false) }
 
-                com.trt.international.githubuserlistcompose.customviews.FavoriteButton(
+                FavoriteButton(
                     isChecked = isChecked,
                     onClick = {
                         setChecked(!isChecked)

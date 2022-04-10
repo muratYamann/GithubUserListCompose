@@ -1,7 +1,7 @@
 package com.trt.international.githubuserlistcompose.di
 
-import com.trt.international.core.userusecase.IUserRepository
-import com.trt.international.core.userusecase.UserRepository
+import com.trt.international.core.repository.IUserRepository
+import com.trt.international.core.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

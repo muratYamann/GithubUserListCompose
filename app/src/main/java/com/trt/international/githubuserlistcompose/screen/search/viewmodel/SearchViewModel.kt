@@ -7,14 +7,20 @@ import androidx.lifecycle.viewModelScope
 import com.trt.international.core.model.UserFavorite
 import com.trt.international.core.model.UserSearchItem
 import com.trt.international.core.state.ResultState
-import com.trt.international.core.userusecase.IUserRepository
+import com.trt.international.githubuserlistcompose.usecase.local.AddFavToDbUseCase
+import com.trt.international.githubuserlistcompose.usecase.local.DeleteFavFromDbUseCase
+import com.trt.international.githubuserlistcompose.usecase.remote.GetDiscoverUsersUseCase
+import com.trt.international.githubuserlistcompose.usecase.remote.GetUserFromApiUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchUseCase: IUserRepository
+    private val discoverUserCase: GetDiscoverUsersUseCase,
+    private val deleteFavFromDbUseCase: DeleteFavFromDbUseCase,
+    private val getUserFromApiUseCase: GetUserFromApiUseCase,
+    private val addUserToDbUseCase: AddFavToDbUseCase
 ) : ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
@@ -33,27 +39,18 @@ class SearchViewModel @Inject constructor(
     val resultDiscoverUserApi: LiveData<List<UserSearchItem>>
         get() = _resultDiscoverUserApi
 
-    /**
-     * Insert to DB
-     */
     private val _resultInsertUserToDb = MutableLiveData<Boolean>()
     val resultInsertUserDb: LiveData<Boolean>
         get() = _resultInsertUserToDb
 
-    /**
-     * Delete from db
-     */
     private val _resultDeleteFromDb = MutableLiveData<Boolean>()
     val resultDeleteFromDb: LiveData<Boolean>
         get() = _resultDeleteFromDb
 
-    /**
-     * Local
-     */
     fun addUserToFavDB(userFavoriteEntity: UserFavorite) {
         viewModelScope.launch {
             try {
-                searchUseCase.addUserToFavDB(userFavoriteEntity)
+                addUserToDbUseCase.addUserToFavDB(userFavoriteEntity)
                 _resultInsertUserToDb.postValue(true)
             } catch (e: Exception) {
                 _error.postValue(e.localizedMessage)
@@ -64,7 +61,7 @@ class SearchViewModel @Inject constructor(
     fun deleteUserFromDb(userFavoriteEntity: UserFavorite) {
         viewModelScope.launch {
             try {
-                searchUseCase.deleteUserFromFavDB(userFavoriteEntity)
+                deleteFavFromDbUseCase.deleteUserFromFavDB(userFavoriteEntity)
                 _resultDeleteFromDb.postValue(true)
             } catch (e: Exception) {
                 _error.postValue(e.localizedMessage)
@@ -76,7 +73,7 @@ class SearchViewModel @Inject constructor(
         _resultDiscoverUserApi.value = emptyList()
         _isLoading.value = true
         viewModelScope.launch {
-            searchUseCase.getDiscoverUsersFromApi().collect {
+            discoverUserCase.getDiscoverUsersFromApi().collect {
                 when (it) {
                     is ResultState.Success -> {
                         _resultDiscoverUserApi.postValue(it.data!!)
@@ -101,7 +98,7 @@ class SearchViewModel @Inject constructor(
         _resultUserApi.value = emptyList()
         _isLoading.value = true
         viewModelScope.launch {
-            searchUseCase.getUserFromApi(query).collect {
+            getUserFromApiUseCase.getUserFromApi(query).collect {
                 when (it) {
                     is ResultState.Success -> {
                         _resultUserApi.postValue(it.data!!)

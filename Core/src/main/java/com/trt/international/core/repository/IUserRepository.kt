@@ -1,4 +1,4 @@
-package com.trt.international.core.userusecase
+package com.trt.international.core.repository
 
 import com.trt.international.core.model.UserDetail
 import com.trt.international.core.model.UserFavorite
