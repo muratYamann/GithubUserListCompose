@@ -1,5 +1,6 @@
 package com.trt.international.githubuserlistcompose.screen.search
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,8 +10,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,9 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.trt.international.core.DataMapper
@@ -35,7 +37,7 @@ import com.trt.international.githubuserlistcompose.screen.search.viewmodel.Searc
 fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel = hiltViewModel()) {
 
     val searchedText = remember { mutableStateOf(String()) }
-    val discoverUserIsVisible = remember { mutableStateOf(true) }
+    val isSearched = remember { mutableStateOf(false) }
 
 
     Scaffold(
@@ -57,63 +59,100 @@ fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel 
                     }
                 },
                 onDone = {
+                    Log.d("callService", "getUserFromApi()")
+                    isSearched.value = true
                     searchViewModel.getUserFromApi(it)
-                }
-            )
+                })
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate(Routes.FavoriteScreen.routes)
-                }
-            ) {
-                Icon(Icons.Filled.Favorite, "")
-            }
+            ExtendedFloatingActionButton(
+                icon = { Icon(Icons.Filled.Favorite, "") },
+                text = { Text("Favorite List") },
+                onClick = { navController.navigate(Routes.FavoriteScreen.routes) },
+                elevation = FloatingActionButtonDefaults.elevation(8.dp)
+            )
         },
         content = {
-
-            LaunchedEffect(key1 = Unit, block = {
-                searchViewModel.getDiscoverUserFromApi()
-            })
-            DefaultContent(navController, searchViewModel)
-
-            when (searchedText.value) {
-                "" -> {
+            val resultUserApi = searchViewModel.resultUserApi.observeAsState()
+            if (resultUserApi.value.isNullOrEmpty()) {
+                LaunchedEffect(key1 = Unit) {
+                    Log.d("callService", "getDiscoverUserFromApi()")
                     searchViewModel.getDiscoverUserFromApi()
-                    discoverUserIsVisible.value = true
-                    DefaultContent(navController, searchViewModel)
                 }
-
-                else -> {
-                    discoverUserIsVisible.value = false
-                }
+                DefaultContent(navController, searchViewModel, isSearched.value)
             }
+
+            if (isSearched.value) {
+                CircularProgressBar(isDisplayed = false)
+                DefaultContent(navController, searchViewModel, isSearched.value)
+            }
+
+//            when (searchedText.value) {
+//                "" -> {
+//                    Log.d("callService","getDiscoverUserFromApi() from searched text")
+//                    CircularProgressBar(isDisplayed = false)
+//                    searchViewModel.getDiscoverUserFromApi()
+//                    DefaultContent(navController, searchViewModel)
+//                }
+//            }
         }
     )
 }
 
 @Composable
-fun DefaultContent(navController: NavController, searchViewModel: SearchViewModel) {
-    val userList = remember { mutableStateListOf<List<UserSearchItem>>() }
-
+fun DefaultContent(
+    navController: NavController,
+    searchViewModel: SearchViewModel,
+    isSearched: Boolean
+) {
 
     searchViewModel.isLoading.observeAsState().value?.let {
         CircularProgressBar(isDisplayed = it)
     }
 
     searchViewModel.error.observeAsState().value?.let {
+        CircularProgressBar(isDisplayed = false)
         if (it.isNotEmpty()) {
-            CircularProgressBar(isDisplayed = false)
+            CustomToast(message = it, isLong = true)
+            EmptyContentView(
+                navController,
+                buttonText = "Discover",
+                messageText = "Internal error. Please search new user \n\n error message $it ",
+                image = R.drawable.icons_search,
+                showActionButton = false
+            )
         }
     }
 
-    val searchResult = searchViewModel.resultUserApi.observeAsState()
-    searchResult.value?.let { it ->
-        CircularProgressBar(isDisplayed = false)
-        UserResultRowCard(navController, searchViewModel, it)
+    if (isSearched) {
+        val searchResult = searchViewModel.resultUserApi.observeAsState()
+        searchResult.value?.let { it ->
+            CircularProgressBar(isDisplayed = false)
+            if (it.isNullOrEmpty()) {
+                EmptyContentView(
+                    navController,
+                    buttonText = "Discover",
+                    messageText = "Your searched user list is empty."
+                )
+            } else {
+                UserResultRowCard(navController, searchViewModel, it)
+            }
+        }
+    } else {
+        val searchDiscoverUserResult = searchViewModel.resultDiscoverUserApi.observeAsState()
+        searchDiscoverUserResult.value?.let { it ->
+            CircularProgressBar(isDisplayed = false)
+            if (it.isNullOrEmpty()) {
+                EmptyContentView(
+                    navController,
+                    buttonText = "Discover",
+                    messageText = "Your searched user list is empty."
+                )
+            } else {
+                UserResultRowCard(navController, searchViewModel, it)
+            }
+        }
     }
-
-    // userList.swapList(getDailyItemList()) // Returns a List<DailyItem> with latest values and uses mutable list internally
 
 }
 
@@ -125,11 +164,7 @@ fun UserResultRowCard(
     userList: List<UserSearchItem>
 ) {
 
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .clickable(enabled = true) {
-            navController.navigate(Routes.UserDetailScreen.routes)
-        })
+    LazyColumn(modifier = Modifier.fillMaxSize())
 
     {
         items(count = userList.size, itemContent = { itemIndex ->
@@ -137,6 +172,9 @@ fun UserResultRowCard(
                 backgroundColor = colorResource(id = R.color.github_back_color),
                 elevation = 8.dp,
                 modifier = Modifier
+                    .clickable(enabled = true) {
+                        navController.navigate(Routes.UserDetailScreen.itemId(itemId = "${userList[itemIndex].login}"))
+                    }
                     .animateItemPlacement()
                     .height(dimensionResource(id = R.dimen.search_screen_card_height))
                     .padding(horizontal = 16.dp, vertical = 4.dp)
@@ -213,33 +251,5 @@ private fun setFavoriteUser(
 fun <T> SnapshotStateList<T>.swapList(newList: List<T>) {
     clear()
     addAll(newList)
-}
-
-@Composable
-fun SearchFailedItem() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                start = dimensionResource(id = R.dimen.search_screen_failed_text_horizontal_padding),
-                end = dimensionResource(id = R.dimen.search_screen_failed_text_horizontal_padding),
-                bottom = dimensionResource(id = R.dimen.search_screen_failed_text_bottom_padding)
-            ),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        CustomImageViewFromResource(
-            modifier = Modifier.size(dimensionResource(id = R.dimen.search_icon_size)),
-            image = R.drawable.icons_search
-        )
-
-        Text(
-            text = stringResource(id = R.string.search_failed_text),
-            textAlign = TextAlign.Center,
-            color = colorResource(id = R.color.white),
-            fontSize = dimensionResource(id = R.dimen.search_screen_failed_text_size).value.sp
-        )
-    }
 }
 

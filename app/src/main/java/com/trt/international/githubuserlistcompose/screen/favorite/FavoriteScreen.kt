@@ -71,8 +71,13 @@ fun ObserveFavoriteList(navController: NavController, favoriteViewModel: Favorit
     }
 
     val favoriteUserList = favoriteViewModel.resultUserApi.observeAsState()
-    favoriteUserList.value?.let {
-        UserResultRowCard(navController, favoriteViewModel, it)
+    favoriteUserList.value?.let { it ->
+        CircularProgressBar(isDisplayed = false)
+        if (it.isNullOrEmpty()) {
+            EmptyContentView(navController, "Discover", "Your favorite list is empty.")
+        } else {
+            UserResultRowCard(navController, favoriteViewModel, it)
+        }
     }
 
 }
@@ -101,7 +106,7 @@ fun UserResultRowCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateItemPlacement()
-                    .height(dimensionResource(id = R.dimen.favori_card_item_height))
+                    .wrapContentHeight()
                     .padding(
                         bottom = dimensionResource(id = R.dimen.favorite_screen_card_bottom_padding),
                         top = dimensionResource(id = R.dimen.favorite_screen_card_top_padding),
@@ -133,7 +138,6 @@ fun UserResultRowCard(
 
                     CustomImageViewFromURL(
                         modifier = Modifier
-                            .padding(top = 8.dp)
                             .size(60.dp)
                             .border(
                                 width = 1.dp,
@@ -147,7 +151,7 @@ fun UserResultRowCard(
 
                     Text(
                         modifier = Modifier
-                            .padding(top = 8.dp, bottom = 8.dp)
+                            .padding(top = 8.dp, bottom = 16.dp)
                             .align(Alignment.CenterHorizontally),
                         text = userList[itemIndex].username,
                         color = colorResource(id = R.color.user_list_text_color)

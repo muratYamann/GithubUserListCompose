@@ -12,6 +12,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trt.international.githubuserlistcompose.R
 
@@ -58,15 +59,10 @@ fun CustomAppBar(
 
         CustomImageViewFromResource(
             modifier = Modifier
+                .padding(end = 16.dp)
                 .size(dimensionResource(id = R.dimen.app_bar_icon_size))
                 .align(Alignment.CenterVertically),
             image = R.drawable.app_icon
         )
     }
-}
-
-@Composable
-@Preview
-fun CustomAppBar() {
-    CustomBackNavigationBar("Favorite List", {}, "", {})
 }

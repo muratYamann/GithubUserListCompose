@@ -1,11 +1,11 @@
 package com.trt.international.core
 
 import com.trt.international.core.local.db.entity.UserFavoriteEntity
-import com.trt.international.core.local.responses.UserSearchResponseItem
 import com.trt.international.core.model.UserDetail
 import com.trt.international.core.model.UserFavorite
 import com.trt.international.core.model.UserSearchItem
 import com.trt.international.core.responses.UserDetailResponse
+import com.trt.international.core.responses.UserSearchResponseItem
 import com.trt.international.core.responses.users.DiscoverUsersResponse
 
 object DataMapper {
@@ -81,7 +81,6 @@ object DataMapper {
             following = data.following,
             location = data.location
         )
-
 
     fun mapUserDetailToUserFavorite(it: UserDetail): UserFavorite =
         UserFavorite(

@@ -3,9 +3,11 @@ package com.trt.international.githubuserlistcompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.trt.international.githubuserlistcompose.navigate.Routes
 import com.trt.international.githubuserlistcompose.screen.detail.UserDetailScreen
 import com.trt.international.githubuserlistcompose.screen.favorite.FavoriteScreen
@@ -28,17 +30,25 @@ class MainActivity : ComponentActivity() {
                     composable(route = Routes.SearchScreen.routes) {
                         SearchScreen(navController)
                     }
-
-                    composable(
-                        route = Routes.UserDetailScreen.routes
-                    ) {
-                        UserDetailScreen(navController)
-                    }
                     composable(
                         route = Routes.FavoriteScreen.routes
                     ) {
                         FavoriteScreen(navController)
                     }
+
+                    composable(
+                        route = Routes.UserDetailScreen.routes,
+                        arguments = listOf(navArgument("itemId") {
+                            type = NavType.StringType
+                            defaultValue = "0"
+                        })
+                    ) {
+                        UserDetailScreen(
+                            navController = navController,
+                            itemId = it.arguments?.getString("itemId")!!
+                        )
+                    }
+
 
                 }
 

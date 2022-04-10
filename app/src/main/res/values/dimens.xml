@@ -54,6 +54,7 @@
     <dimen name="topBar_title_text_size">14sp</dimen>
     <dimen name="topBar_action_button_padding_horizontal">10dp</dimen>
     <dimen name="app_bar_icon_size">32dp</dimen>
-    <dimen name="favori_card_item_height">150dp</dimen>
+    <dimen name="favori_card_item_height">200dp</dimen>
+    <dimen name="empty_view_icon_size">32dp</dimen>
 
 </resources>

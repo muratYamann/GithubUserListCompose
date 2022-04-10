@@ -5,9 +5,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,42 +28,45 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.trt.international.core.model.UserDetail
+import com.trt.international.core.model.UserFavorite
 import com.trt.international.githubuserlistcompose.R
 import com.trt.international.githubuserlistcompose.customviews.CircularProgressBar
 import com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromResource
 import com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromURL
 import com.trt.international.githubuserlistcompose.customviews.FavoriteButton
 import com.trt.international.githubuserlistcompose.screen.detail.viewmodel.DetailViewModel
+import com.trt.international.githubuserlistcompose.screen.favorite.viewmodel.FavoriteViewModel
 
 @Composable
 fun UserDetailScreen(
+    itemId: String,
     navController: NavController,
     userDetailViewModel: DetailViewModel = hiltViewModel()
 ) {
 
     LaunchedEffect(key1 = Unit, block = {
-        userDetailViewModel.getUserDetailFromApi("muratYamann")
+        userDetailViewModel.getUserDetailFromApi(itemId)
     })
     UserDetailContent(navController, userDetailViewModel)
 
 }
 
 @Composable
-fun UserDetailContent(navController: NavController, searchViewModel: DetailViewModel) {
+fun UserDetailContent(navController: NavController, userDetailViewModel: DetailViewModel) {
 
-    searchViewModel.state.observeAsState().value?.let {
+    userDetailViewModel.state.observeAsState().value?.let {
         CircularProgressBar(isDisplayed = it)
     }
 
-    searchViewModel.error.observeAsState().value?.let {
+    userDetailViewModel.error.observeAsState().value?.let {
         if (it.isNotEmpty()) {
             CircularProgressBar(isDisplayed = false)
         }
     }
 
-    val searchResult = searchViewModel.resultUserApi.observeAsState()
+    val searchResult = userDetailViewModel.resultUserApi.observeAsState()
     searchResult.value?.let { it ->
-        UserResultRowCard(navController, it)
+        UserResultRowCard(navController, userDetailViewModel, it)
     } ?: run {
         SearchFailedItem()
     }
@@ -93,7 +101,11 @@ fun SearchFailedItem() {
 }
 
 @Composable
-fun UserResultRowCard(navController: NavController, userItem: UserDetail) {
+fun UserResultRowCard(
+    navController: NavController,
+    detailViewModel: DetailViewModel,
+    userItem: UserDetail
+) {
 
     Column(
         modifier = Modifier
@@ -123,9 +135,7 @@ fun UserResultRowCard(navController: NavController, userItem: UserDetail) {
 
             CustomImageViewFromURL(
                 modifier = Modifier
-                    .clickable(enabled = true) {
-
-                    }
+                    .clickable(enabled = true) {}
                     .size(90.dp)
                     .border(width = 2.dp, color = Color.White, CircleShape)
                     .clip(CircleShape),
@@ -134,9 +144,10 @@ fun UserResultRowCard(navController: NavController, userItem: UserDetail) {
 
             Column(modifier = Modifier.padding(top = 8.dp, start = 8.dp)) {
                 Text(
-                    text = userItem.name!!,
+                    text = userItem.name ?: "",
                     color = colorResource(id = R.color.white),
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp
                 )
                 Text(
                     text = userItem.username,
@@ -146,8 +157,8 @@ fun UserResultRowCard(navController: NavController, userItem: UserDetail) {
         }
         Text(
             modifier = Modifier
-                .padding(top = 16.dp),
-            text = userItem.bio ?: "Bio",
+                .padding(top = 24.dp),
+            text = userItem.bio ?: "Empty Bio",
             color = colorResource(id = R.color.white)
         )
 
@@ -226,13 +237,25 @@ fun UserResultRowCard(navController: NavController, userItem: UserDetail) {
         Row(modifier = Modifier.fillMaxWidth()) {
             FavoriteButton(
                 isChecked = isChecked,
-                onClick = { setChecked(!isChecked) }
+                onClick = {
+                    setChecked(!isChecked)
+                }
             )
         }
-
 
     }
 }
 
+private fun setFavoriteUser(
+    favoriteViewModel: FavoriteViewModel,
+    isChecked: Boolean,
+    userFavorite: UserFavorite
+) {
+    if (isChecked) {
+        favoriteViewModel.deleteUserFromDb(userFavorite)
 
+    } else {
+        favoriteViewModel.addUserToFavDB(userFavorite)
+    }
+}
 

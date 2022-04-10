@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
@@ -49,7 +48,7 @@ fun FavoriteButton(
                 }
             },
             label = "Size"
-        ) { 30.dp }
+        ) { 24.dp }
 
         Icon(
             imageVector = if (isChecked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,

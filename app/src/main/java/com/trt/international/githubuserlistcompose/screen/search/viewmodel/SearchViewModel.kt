@@ -29,20 +29,23 @@ class SearchViewModel @Inject constructor(
     val resultUserApi: LiveData<List<UserSearchItem>>
         get() = _resultUserApi
 
+    private val _resultDiscoverUserApi = MutableLiveData<List<UserSearchItem>>()
+    val resultDiscoverUserApi: LiveData<List<UserSearchItem>>
+        get() = _resultDiscoverUserApi
+
     /**
      * Insert to DB
      */
     private val _resultInsertUserToDb = MutableLiveData<Boolean>()
-    val resultInsertUserDb : LiveData<Boolean>
+    val resultInsertUserDb: LiveData<Boolean>
         get() = _resultInsertUserToDb
 
     /**
      * Delete from db
      */
     private val _resultDeleteFromDb = MutableLiveData<Boolean>()
-    val resultDeleteFromDb : LiveData<Boolean>
+    val resultDeleteFromDb: LiveData<Boolean>
         get() = _resultDeleteFromDb
-
 
     /**
      * Local
@@ -52,7 +55,7 @@ class SearchViewModel @Inject constructor(
             try {
                 searchUseCase.addUserToFavDB(userFavoriteEntity)
                 _resultInsertUserToDb.postValue(true)
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 _error.postValue(e.localizedMessage)
             }
         }
@@ -63,26 +66,28 @@ class SearchViewModel @Inject constructor(
             try {
                 searchUseCase.deleteUserFromFavDB(userFavoriteEntity)
                 _resultDeleteFromDb.postValue(true)
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 _error.postValue(e.localizedMessage)
             }
         }
     }
 
-
     fun getDiscoverUserFromApi() {
+        _resultDiscoverUserApi.value = emptyList()
         _isLoading.value = true
         viewModelScope.launch {
             searchUseCase.getDiscoverUsersFromApi().collect {
                 when (it) {
                     is ResultState.Success -> {
-                        _resultUserApi.postValue(it.data!!)
+                        _resultDiscoverUserApi.postValue(it.data!!)
                         _isLoading.value = false
                     }
+
                     is ResultState.Error -> {
                         _error.postValue(it.error!!)
                         _isLoading.value = false
                     }
+
                     is ResultState.NetworkError -> {
                         _error.postValue("Networ Error")
                         _isLoading.value = false
@@ -93,6 +98,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun getUserFromApi(query: String) {
+        _resultUserApi.value = emptyList()
         _isLoading.value = true
         viewModelScope.launch {
             searchUseCase.getUserFromApi(query).collect {
@@ -101,10 +107,12 @@ class SearchViewModel @Inject constructor(
                         _resultUserApi.postValue(it.data!!)
                         _isLoading.value = false
                     }
+
                     is ResultState.Error -> {
                         _error.postValue(it.error!!)
                         _isLoading.value = false
                     }
+
                     is ResultState.NetworkError -> {
                         _error.postValue("Networ Error")
                         _isLoading.value = false
@@ -113,6 +121,5 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
-
 
 }
