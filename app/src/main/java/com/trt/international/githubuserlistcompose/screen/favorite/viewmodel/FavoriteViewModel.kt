@@ -27,23 +27,17 @@ class FavoriteViewModel @Inject constructor(
     val resultUserApi: LiveData<List<UserFavorite>>
         get() = _resultUserApi
 
-    /**
-     * Insert to DB
-     */
+
     private val _resultInsertUserToDb = MutableLiveData<Boolean>()
     val resultInsertUserDb: LiveData<Boolean>
         get() = _resultInsertUserToDb
 
-    /**
-     * Delete from db
-     */
+
     private val _resultDeleteFromDb = MutableLiveData<Boolean>()
     val resultDeleteFromDb: LiveData<Boolean>
         get() = _resultDeleteFromDb
 
-    /**
-     * Local
-     */
+
     fun addUserToFavDB(userFavoriteEntity: UserFavorite) {
         viewModelScope.launch {
             try {

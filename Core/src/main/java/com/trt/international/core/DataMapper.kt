@@ -10,9 +10,7 @@ import com.trt.international.core.responses.users.DiscoverUsersResponse
 
 object DataMapper {
 
-    /**
-     * search users list
-     */
+
     fun mapUserSearchResponseToDomain(data: List<UserSearchResponseItem>): List<UserSearchItem> =
         data.map {
             UserSearchItem(
@@ -22,9 +20,6 @@ object DataMapper {
             )
         }
 
-    /**
-     * discover users list
-     */
     fun mapDiscoverUsersResponseToDomain(data: DiscoverUsersResponse): List<UserSearchItem> =
         data.map {
             UserSearchItem(

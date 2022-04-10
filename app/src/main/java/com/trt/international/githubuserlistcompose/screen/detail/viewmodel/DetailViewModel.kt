@@ -8,7 +8,6 @@ import com.trt.international.core.model.UserDetail
 import com.trt.international.core.model.UserFavorite
 import com.trt.international.core.state.ResultState
 import com.trt.international.core.userusecase.IUserRepository
-import com.trt.international.githubuserlistcompose.screen.favorite.viewmodel.FavoriteViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,24 +29,18 @@ class DetailViewModel @Inject constructor(
     val resultUserApi: LiveData<UserDetail>
         get() = _resultUserDetailApi
 
-    /**
-     * Insert to DB
-     */
+    private val _resultUserApi = MutableLiveData<List<UserFavorite>>()
+    val resultUserDB: LiveData<List<UserFavorite>>
+        get() = _resultUserApi
+
     private val _resultInsertUserToDb = MutableLiveData<Boolean>()
     val resultInsertUserDb: LiveData<Boolean>
         get() = _resultInsertUserToDb
 
-    /**
-     * Delete from db
-     */
     private val _resultDeleteFromDb = MutableLiveData<Boolean>()
     val resultDeleteFromDb: LiveData<Boolean>
         get() = _resultDeleteFromDb
 
-
-    /**
-     * Local
-     */
     fun addUserToFavDB(userFavoriteEntity: UserFavorite) {
         viewModelScope.launch {
             try {
@@ -69,7 +62,6 @@ class DetailViewModel @Inject constructor(
             }
         }
     }
-
 
     fun getUserDetailFromApi(query: String) {
         _state.value = true
@@ -94,6 +86,17 @@ class DetailViewModel @Inject constructor(
 
         }
     }
+
+    fun getUserDetailFromDB(username: String) {
+        _state.value = true
+        viewModelScope.launch {
+            searchUseCase.getFavoriteUserByUsername(username).collect {
+                _resultUserApi.postValue(it)
+                _state.value = false
+            }
+        }
+    }
+
 
 }
 

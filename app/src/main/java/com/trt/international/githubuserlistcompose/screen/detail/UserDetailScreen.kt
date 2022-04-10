@@ -27,15 +27,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.trt.international.core.DataMapper
 import com.trt.international.core.model.UserDetail
-import com.trt.international.core.model.UserFavorite
 import com.trt.international.githubuserlistcompose.R
 import com.trt.international.githubuserlistcompose.customviews.CircularProgressBar
 import com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromResource
 import com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromURL
 import com.trt.international.githubuserlistcompose.customviews.FavoriteButton
 import com.trt.international.githubuserlistcompose.screen.detail.viewmodel.DetailViewModel
-import com.trt.international.githubuserlistcompose.screen.favorite.viewmodel.FavoriteViewModel
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun UserDetailScreen(
@@ -46,6 +46,7 @@ fun UserDetailScreen(
 
     LaunchedEffect(key1 = Unit, block = {
         userDetailViewModel.getUserDetailFromApi(itemId)
+        userDetailViewModel.getUserDetailFromDB(itemId)
     })
     UserDetailContent(navController, userDetailViewModel)
 
@@ -65,11 +66,19 @@ fun UserDetailContent(navController: NavController, userDetailViewModel: DetailV
     }
 
     val searchResult = userDetailViewModel.resultUserApi.observeAsState()
+    val searchSearchFromFavoriteDbResult = userDetailViewModel.resultUserDB.observeAsState()
+   searchSearchFromFavoriteDbResult.value?.let {
+   }
+
     searchResult.value?.let { it ->
         UserResultRowCard(navController, userDetailViewModel, it)
     } ?: run {
         SearchFailedItem()
     }
+
+
+
+
 }
 
 @Composable
@@ -126,23 +135,39 @@ fun UserResultRowCard(
             tint = colorResource(id = R.color.github_back_text_color)
         )
 
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 46.dp),
-            horizontalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            CustomImageViewFromURL(
-                modifier = Modifier
-                    .clickable(enabled = true) {}
-                    .size(90.dp)
-                    .border(width = 2.dp, color = Color.White, CircleShape)
-                    .clip(CircleShape),
-                image = userItem.avatarUrl!!,
-            )
+            Box(
+                contentAlignment = Alignment.BottomEnd
+            ) {
 
-            Column(modifier = Modifier.padding(top = 8.dp, start = 8.dp)) {
+                CustomImageViewFromURL(
+                    modifier = Modifier
+                        .padding(17.dp)
+                        .clickable(enabled = true) {}
+                        .size(120.dp)
+                        .border(width = 2.dp, color = Color.White, CircleShape)
+                        .clip(CircleShape),
+                    image = userItem.avatarUrl!!,
+                )
+
+                val (isChecked, setChecked) = remember { mutableStateOf(false) }
+                FavoriteButton(
+                    isChecked = isChecked,
+                    onClick = {
+                        setChecked(!isChecked)
+                        setFavoriteUser(detailViewModel, isChecked, userItem)
+                    }
+                )
+            }
+
+            Column(modifier = Modifier.padding(start = 8.dp)) {
                 Text(
                     text = userItem.name ?: "",
                     color = colorResource(id = R.color.white),
@@ -157,7 +182,7 @@ fun UserResultRowCard(
         }
         Text(
             modifier = Modifier
-                .padding(top = 24.dp),
+                .padding(start = 4.dp, top = 24.dp),
             text = userItem.bio ?: "Empty Bio",
             color = colorResource(id = R.color.white)
         )
@@ -180,7 +205,6 @@ fun UserResultRowCard(
                 text = userItem.location ?: "Temp Location",
                 color = colorResource(id = R.color.white)
             )
-
         }
 
 
@@ -233,29 +257,30 @@ fun UserResultRowCard(
 
         }
 
-        val (isChecked, setChecked) = remember { mutableStateOf(false) }
-        Row(modifier = Modifier.fillMaxWidth()) {
-            FavoriteButton(
-                isChecked = isChecked,
-                onClick = {
-                    setChecked(!isChecked)
-                }
-            )
-        }
-
     }
 }
 
 private fun setFavoriteUser(
-    favoriteViewModel: FavoriteViewModel,
+    searchViewModel: DetailViewModel,
     isChecked: Boolean,
-    userFavorite: UserFavorite
+    userSearchItem: UserDetail
 ) {
     if (isChecked) {
-        favoriteViewModel.deleteUserFromDb(userFavorite)
+        val userFavorite = userSearchItem.let {
+            DataMapper.mapUserDetailToUserFavorite(it)
+        }
+        userFavorite.let {
+            searchViewModel.deleteUserFromDb(it)
+        }
 
     } else {
-        favoriteViewModel.addUserToFavDB(userFavorite)
+        val userFavorite = userSearchItem.let {
+            DataMapper.mapUserDetailToUserFavorite(it)
+        }
+        userFavorite.let {
+            searchViewModel.addUserToFavDB(it)
+        }
+
     }
 }
 
