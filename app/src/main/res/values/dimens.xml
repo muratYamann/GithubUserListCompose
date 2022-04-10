@@ -56,5 +56,7 @@
     <dimen name="app_bar_icon_size">32dp</dimen>
     <dimen name="favori_card_item_height">200dp</dimen>
     <dimen name="empty_view_icon_size">32dp</dimen>
+    <dimen name="textField_radius">8dp</dimen>
+    <dimen name="search_text_size">14sp</dimen>
 
 </resources>

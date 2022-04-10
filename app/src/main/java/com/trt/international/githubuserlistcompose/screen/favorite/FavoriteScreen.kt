@@ -97,7 +97,6 @@ fun UserResultRowCard(
             .clickable(enabled = true) {
                 navController.navigate(Routes.UserDetailScreen.routes)
             })
-
     {
         items(count = userList.size, itemContent = { itemIndex ->
             Card(

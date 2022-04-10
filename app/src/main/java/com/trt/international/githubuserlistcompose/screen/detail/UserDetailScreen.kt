@@ -8,11 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,17 +22,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.trt.international.core.DataMapper
 import com.trt.international.core.model.UserDetail
 import com.trt.international.githubuserlistcompose.R
-import com.trt.international.githubuserlistcompose.customviews.CircularProgressBar
-import com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromResource
-import com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromURL
-import com.trt.international.githubuserlistcompose.customviews.FavoriteButton
 import com.trt.international.githubuserlistcompose.screen.detail.viewmodel.DetailViewModel
-import kotlinx.coroutines.runBlocking
 
 @Composable
 fun UserDetailScreen(
@@ -48,36 +41,42 @@ fun UserDetailScreen(
         userDetailViewModel.getUserDetailFromApi(itemId)
         userDetailViewModel.getUserDetailFromDB(itemId)
     })
-    UserDetailContent(navController, userDetailViewModel)
+    UserDetailContent(navController, userDetailViewModel, itemId)
 
 }
 
 @Composable
-fun UserDetailContent(navController: NavController, userDetailViewModel: DetailViewModel) {
+fun UserDetailContent(
+    navController: NavController,
+    userDetailViewModel: DetailViewModel,
+    itemId: String
+) {
 
     userDetailViewModel.state.observeAsState().value?.let {
-        CircularProgressBar(isDisplayed = it)
+        com.trt.international.githubuserlistcompose.customviews.CircularProgressBar(isDisplayed = it)
     }
 
     userDetailViewModel.error.observeAsState().value?.let {
         if (it.isNotEmpty()) {
-            CircularProgressBar(isDisplayed = false)
+            com.trt.international.githubuserlistcompose.customviews.CircularProgressBar(isDisplayed = false)
         }
     }
 
+    val isHasOnFavorite = remember { mutableStateOf(false) }
+
     val searchResult = userDetailViewModel.resultUserApi.observeAsState()
     val searchSearchFromFavoriteDbResult = userDetailViewModel.resultUserDB.observeAsState()
-   searchSearchFromFavoriteDbResult.value?.let {
-   }
 
-    searchResult.value?.let { it ->
-        UserResultRowCard(navController, userDetailViewModel, it)
+    searchSearchFromFavoriteDbResult.value?.let { list ->
+        list.any { it.name == itemId }
+        isHasOnFavorite.value = true
+    }
+
+    searchResult.value?.let { userDetail ->
+        UserResultRowCard(navController, userDetailViewModel, userDetail, isHasOnFavorite)
     } ?: run {
         SearchFailedItem()
     }
-
-
-
 
 }
 
@@ -95,7 +94,7 @@ fun SearchFailedItem() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        CustomImageViewFromResource(
+        com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromResource(
             modifier = Modifier.size(dimensionResource(id = R.dimen.search_icon_size)),
             image = R.drawable.icons_search
         )
@@ -113,8 +112,10 @@ fun SearchFailedItem() {
 fun UserResultRowCard(
     navController: NavController,
     detailViewModel: DetailViewModel,
-    userItem: UserDetail
+    userItem: UserDetail,
+    isHasOnFavorite: MutableState<Boolean>
 ) {
+    val isClickedProfileIcon = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -147,18 +148,32 @@ fun UserResultRowCard(
                 contentAlignment = Alignment.BottomEnd
             ) {
 
-                CustomImageViewFromURL(
+                com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromURL(
                     modifier = Modifier
+                        .clickable(enabled = true) {
+                            isClickedProfileIcon.value = true
+                        }
                         .padding(17.dp)
-                        .clickable(enabled = true) {}
                         .size(120.dp)
                         .border(width = 2.dp, color = Color.White, CircleShape)
                         .clip(CircleShape),
                     image = userItem.avatarUrl!!,
                 )
 
+                if (isClickedProfileIcon.value) {
+                    com.trt.international.githubuserlistcompose.customviews.CustomToast(message = "image clicked")
+                    Dialog(onDismissRequest = { isClickedProfileIcon.value = false }) {
+                        com.trt.international.githubuserlistcompose.customviews.CustomDialogUI(
+                            openDialogCustom = isClickedProfileIcon,
+                            image = userItem.avatarUrl!!
+                        )
+                    }
+
+                }
+
                 val (isChecked, setChecked) = remember { mutableStateOf(false) }
-                FavoriteButton(
+
+                com.trt.international.githubuserlistcompose.customviews.FavoriteButton(
                     isChecked = isChecked,
                     onClick = {
                         setChecked(!isChecked)
