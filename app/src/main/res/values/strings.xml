@@ -6,5 +6,6 @@
     <string name="search_screen_search_bar_placeholder_text">Search</string>
     <string name="search_failed_text">Aradığınızı içerik bulunamadı. Tekrar deneyin veya türlere göre keşfedin</string>
     <string name="dialog_ok">OK</string>
+    <string name="favorite_list">Favorite List</string>
 
 </resources>

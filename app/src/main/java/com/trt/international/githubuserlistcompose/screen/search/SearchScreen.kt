@@ -1,13 +1,14 @@
 package com.trt.international.githubuserlistcompose.screen.search
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Card
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -23,12 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.trt.international.core.DataMapper
 import com.trt.international.core.model.UserSearchItem
 import com.trt.international.githubuserlistcompose.R
-import com.trt.international.githubuserlistcompose.customviews.CircularProgressBar
-import com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromResource
-import com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromURL
-import com.trt.international.githubuserlistcompose.customviews.CustomSearchBar
+import com.trt.international.githubuserlistcompose.customviews.*
 import com.trt.international.githubuserlistcompose.navigate.Routes
 import com.trt.international.githubuserlistcompose.screen.search.viewmodel.SearchViewModel
 
@@ -61,6 +60,15 @@ fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel 
                     searchViewModel.getUserFromApi(it)
                 }
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate(Routes.FavoriteScreen.routes)
+                }
+            ) {
+                Icon(Icons.Filled.Favorite, "")
+            }
         },
         content = {
 
@@ -100,18 +108,22 @@ fun DefaultContent(navController: NavController, searchViewModel: SearchViewMode
     }
 
     val searchResult = searchViewModel.resultUserApi.observeAsState()
-    var userResult = searchResult.value
     searchResult.value?.let { it ->
-        //userList.swapList(it)
-        UserResultRowCard(navController, it)
+        CircularProgressBar(isDisplayed = false)
+        UserResultRowCard(navController, searchViewModel, it)
     }
 
     // userList.swapList(getDailyItemList()) // Returns a List<DailyItem> with latest values and uses mutable list internally
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun UserResultRowCard(navController: NavController, userList: List<UserSearchItem>) {
+fun UserResultRowCard(
+    navController: NavController,
+    searchViewModel: SearchViewModel,
+    userList: List<UserSearchItem>
+) {
 
     LazyColumn(modifier = Modifier
         .fillMaxSize()
@@ -125,36 +137,75 @@ fun UserResultRowCard(navController: NavController, userList: List<UserSearchIte
                 backgroundColor = colorResource(id = R.color.github_back_color),
                 elevation = 8.dp,
                 modifier = Modifier
+                    .animateItemPlacement()
                     .height(dimensionResource(id = R.dimen.search_screen_card_height))
                     .padding(horizontal = 16.dp, vertical = 4.dp)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight()
+                        .wrapContentHeight(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    CustomImageViewFromURL(
-                        modifier = Modifier
-                            .size(60.dp)
-                            .border(
-                                width = 1.dp,
-                                color = colorResource(id = R.color.github_back_text_color),
-                                CircleShape
-                            )
-                            .align(Alignment.CenterVertically)
-                            .clip(CircleShape),
-                        image = userList[itemIndex].avatarUrl!!,
+                    Row {
+                        CustomImageViewFromURL(
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .size(60.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = colorResource(id = R.color.github_back_text_color),
+                                    CircleShape
+                                )
+                                .align(Alignment.CenterVertically)
+                                .clip(CircleShape),
+                            image = userList[itemIndex].avatarUrl!!,
+                        )
+
+                        Text(
+                            modifier = Modifier.padding(start = 8.dp),
+                            text = userList[itemIndex].login!!,
+                            color = colorResource(id = R.color.user_list_text_color)
+                        )
+                    }
+
+                    val (isChecked, setChecked) = remember { mutableStateOf(false) }
+                    FavoriteButton(
+                        isChecked = isChecked,
+                        onClick = {
+                            setChecked(!isChecked)
+                            setFavoriteUser(searchViewModel, isChecked, userList[itemIndex])
+                        }
                     )
 
-                    Text(
-                        modifier = Modifier.padding(start = 8.dp),
-                        text = userList[itemIndex].login!!,
-                        color = colorResource(id = R.color.user_list_text_color)
-                    )
                 }
             }
         })
+
+    }
+}
+
+private fun setFavoriteUser(
+    searchViewModel: SearchViewModel,
+    isChecked: Boolean,
+    userSearchItem: UserSearchItem
+) {
+    if (isChecked) {
+        val userFavorite = userSearchItem.let {
+            DataMapper.mapUserSearchItemToUserFavorite(it)
+        }
+        userFavorite.let {
+            searchViewModel.deleteUserFromDb(it)
+        }
+
+    } else {
+        val userFavorite = userSearchItem.let {
+            DataMapper.mapUserSearchItemToUserFavorite(it)
+        }
+        userFavorite.let {
+            searchViewModel.addUserToFavDB(it)
+        }
 
     }
 }

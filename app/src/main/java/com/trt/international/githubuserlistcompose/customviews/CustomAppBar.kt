@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,17 +16,15 @@ import androidx.compose.ui.unit.sp
 import com.trt.international.githubuserlistcompose.R
 
 @Composable
-fun CustomBackNavigationBar(
+fun CustomAppBar(
     topBarTitle: String,
-    navigationIconClick: () -> Unit,
-    actionButonText: String? = null,
-    actionClick: () -> Unit = {}
+    navigationIconClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(dimensionResource(id = R.dimen.topBar_height))
-            .background(color = Color.Gray),
+            .background(color = colorResource(id = R.color.github_bar_color)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -63,31 +62,11 @@ fun CustomBackNavigationBar(
                 .align(Alignment.CenterVertically),
             image = R.drawable.app_icon
         )
-
-        actionButonText?.let {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .clickable {
-                        actionClick()
-                    }
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(end = dimensionResource(id = R.dimen.all_pages_padding))
-                        .align(Alignment.Center),
-                    text = it,
-                    color = Color.White,
-                    fontSize = dimensionResource(id = R.dimen.topBar_title_text_size).value.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
     }
 }
 
 @Composable
 @Preview
-fun TestTRTBackNavigationBar() {
-    CustomBackNavigationBar("Screen Name", {}, "XXX", {})
+fun CustomAppBar() {
+    CustomBackNavigationBar("Favorite List", {}, "", {})
 }

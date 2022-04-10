@@ -11,4 +11,6 @@
     <color name="user_list_text_color">#58A6FF</color>
     <color name="github_back_text_color">#8B949E</color>
     <color name="github_back_color">#161B22</color>
+    <color name="github_favorite_card_color">#14181E</color>
+    <color name="github_bar_color">#11151A</color>
 </resources>

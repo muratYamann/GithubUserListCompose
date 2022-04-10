@@ -82,6 +82,7 @@ object DataMapper {
             location = data.location
         )
 
+
     fun mapUserDetailToUserFavorite(it: UserDetail): UserFavorite =
         UserFavorite(
             username = it.username,
@@ -95,6 +96,21 @@ object DataMapper {
             followers = it.followers,
             following = it.following,
             location = it.location
+        )
+
+    fun mapUserSearchItemToUserFavorite(it: UserSearchItem): UserFavorite =
+        UserFavorite(
+            username = it.login!!,
+            name = "",
+            avatarUrl = it.avatarUrl,
+            followersUrl = "",
+            bio = "",
+            company = "",
+            publicRepos = 0,
+            followingUrl = "",
+            followers = 0,
+            following = 0,
+            location = ""
         )
 
 }

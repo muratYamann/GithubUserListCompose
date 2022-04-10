@@ -1,4 +1,4 @@
-package com.trt.international.githubuserlistcompose.screen.detail
+package com.trt.international.githubuserlistcompose.screen.detail.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

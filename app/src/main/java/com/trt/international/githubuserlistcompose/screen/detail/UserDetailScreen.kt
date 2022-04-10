@@ -6,8 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.trt.international.core.model.UserDetail
@@ -29,6 +27,8 @@ import com.trt.international.githubuserlistcompose.R
 import com.trt.international.githubuserlistcompose.customviews.CircularProgressBar
 import com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromResource
 import com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromURL
+import com.trt.international.githubuserlistcompose.customviews.FavoriteButton
+import com.trt.international.githubuserlistcompose.screen.detail.viewmodel.DetailViewModel
 
 @Composable
 fun UserDetailScreen(
@@ -104,8 +104,11 @@ fun UserResultRowCard(navController: NavController, userItem: UserDetail) {
         Icon(
             modifier = Modifier
                 .align(Alignment.End)
-                .size(60.dp)
-                .padding(top = 20.dp, end = 16.dp),
+                .size(50.dp)
+                .padding(top = 20.dp, end = 16.dp)
+                .clickable(enabled = true) {
+                    navController.navigateUp()
+                },
             painter = painterResource(id = R.drawable.icons_close),
             contentDescription = null,
             tint = colorResource(id = R.color.github_back_text_color)
@@ -219,62 +222,17 @@ fun UserResultRowCard(navController: NavController, userItem: UserDetail) {
 
         }
 
+        val (isChecked, setChecked) = remember { mutableStateOf(false) }
+        Row(modifier = Modifier.fillMaxWidth()) {
+            FavoriteButton(
+                isChecked = isChecked,
+                onClick = { setChecked(!isChecked) }
+            )
+        }
+
+
     }
 }
 
-@Composable
-fun AppDialog(
-    modifier: Modifier = Modifier,
-    avatarUrl: String,
-    dialogState: Boolean = false,
-    onDialogPositiveButtonClicked: (() -> Unit)? = null,
-    onDialogStateChange: ((Boolean) -> Unit)? = null,
-    onDismissRequest: (() -> Unit)? = null,
-) {
-    val textPaddingAll = 24.dp
-    val buttonPaddingAll = 8.dp
-    val dialogShape = RoundedCornerShape(16.dp)
 
-    if (dialogState) {
-        AlertDialog(
-            onDismissRequest = {
-                onDialogStateChange?.invoke(false)
-                onDismissRequest?.invoke()
-            },
-            title = null,
-            text = null,
-            buttons = {
 
-                Column {
-                    CustomImageViewFromURL(
-                        modifier = Modifier.fillMaxWidth(),
-                        avatarUrl
-                    )
-                    Divider(color = MaterialTheme.colors.onSurface, thickness = 1.dp)
-
-                    Row(
-                        modifier = Modifier.padding(all = buttonPaddingAll),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        TextButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                onDialogStateChange?.invoke(false)
-                                onDialogPositiveButtonClicked?.invoke()
-                            }
-                        ) {
-                            Text(
-                                text = stringResource(R.string.dialog_ok),
-                                color = MaterialTheme.colors.onSurface
-                            )
-                        }
-                    }
-                }
-
-            },
-            properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = false),
-            modifier = modifier,
-            shape = dialogShape
-        )
-    }
-}
