@@ -1,4 +1,4 @@
-package com.trt.international.core.userusecase
+package com.trt.international.core.repository
 
 import com.trt.international.core.DataMapper
 import com.trt.international.core.local.db.dao.UserFavoriteDao
