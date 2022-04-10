@@ -7,4 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#414141</color>
+    <color name="user_list_text_color">#58A6FF</color>
+    <color name="github_back_text_color">#8B949E</color>
+    <color name="search_bar_placeholder_color">#8B949E</color>
+    <color name="bg_textfield">#333333</color>
+    <color name="github_back_color">#161B22</color>
+    <color name="github_favorite_card_color">#12151A</color>
+    <color name="github_bar_color">#11151A</color>
+
 </resources>
