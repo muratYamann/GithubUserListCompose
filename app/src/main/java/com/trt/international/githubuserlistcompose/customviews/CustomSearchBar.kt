@@ -18,14 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.sp
-import com.trt.international.ui.R
+import com.trt.international.githubuserlistcompose.R
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -76,7 +75,6 @@ fun CustomSearchBar(
                 keyboardController?.hide()
             },
 
-
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = colorResource(id = R.color.bg_textfield),
@@ -89,4 +87,3 @@ fun CustomSearchBar(
         )
     }
 }
-

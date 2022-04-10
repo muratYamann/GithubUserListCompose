@@ -22,6 +22,10 @@
     <dimen name="search_screen_show_card_vertical_grid_layout_height">300dp</dimen>
     <dimen name="search_screen_show_card_image_height">100dp</dimen>
     <dimen name="search_screen_show_card_image_bottom_padding">16dp</dimen>
+    <dimen name="favorite_screen_card_bottom_padding">8dp</dimen>
+    <dimen name="favorite_screen_card_start_padding">8dp</dimen>
+    <dimen name="favorite_screen_card_top_padding">8dp</dimen>
+    <dimen name="favorite_screen_card_end_padding">8dp</dimen>
     <dimen name="search_screen_show_card_image_start_padding">8dp</dimen>
     <dimen name="search_screen_show_card_image_end_padding">8dp</dimen>
     <dimen name="search_screen_show_card_image_radius">8dp</dimen>
@@ -49,5 +53,10 @@
     <dimen name="ic_navigate_padding_end">8dp</dimen>
     <dimen name="topBar_title_text_size">14sp</dimen>
     <dimen name="topBar_action_button_padding_horizontal">10dp</dimen>
+    <dimen name="app_bar_icon_size">32dp</dimen>
+    <dimen name="favori_card_item_height">200dp</dimen>
+    <dimen name="empty_view_icon_size">32dp</dimen>
+    <dimen name="textField_radius">8dp</dimen>
+    <dimen name="search_text_size">14sp</dimen>
 
 </resources>

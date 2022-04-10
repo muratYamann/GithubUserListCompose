@@ -82,13 +82,13 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun addUserToFavDB(userFavorite: UserFavorite) {
-        val data = DataMapper.mapUserFavoriteDomainToEntity(userFavorite)
+    override suspend fun addUserToFavDB(userFavoriteEntity: UserFavorite) {
+        val data = DataMapper.mapUserFavoriteDomainToEntity(userFavoriteEntity)
         return userFavoriteDao.addUserToFavoriteDB(data)
     }
 
-    override suspend fun deleteUserFromFavDB(userFavorite: UserFavorite) {
-        val data = DataMapper.mapUserFavoriteDomainToEntity(userFavorite)
+    override suspend fun deleteUserFromFavDB(userFavoriteEntity: UserFavorite) {
+        val data = DataMapper.mapUserFavoriteDomainToEntity(userFavoriteEntity)
         return userFavoriteDao.deleteUserFromFavoriteDB(data)
     }
 

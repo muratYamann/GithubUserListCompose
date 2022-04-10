@@ -1,18 +1,16 @@
 package com.trt.international.core
 
 import com.trt.international.core.local.db.entity.UserFavoriteEntity
-import com.trt.international.core.local.responses.UserSearchResponseItem
 import com.trt.international.core.model.UserDetail
 import com.trt.international.core.model.UserFavorite
 import com.trt.international.core.model.UserSearchItem
 import com.trt.international.core.responses.UserDetailResponse
+import com.trt.international.core.responses.UserSearchResponseItem
 import com.trt.international.core.responses.users.DiscoverUsersResponse
 
 object DataMapper {
 
-    /**
-     * search users list
-     */
+
     fun mapUserSearchResponseToDomain(data: List<UserSearchResponseItem>): List<UserSearchItem> =
         data.map {
             UserSearchItem(
@@ -22,9 +20,6 @@ object DataMapper {
             )
         }
 
-    /**
-     * discover users list
-     */
     fun mapDiscoverUsersResponseToDomain(data: DiscoverUsersResponse): List<UserSearchItem> =
         data.map {
             UserSearchItem(
@@ -95,6 +90,21 @@ object DataMapper {
             followers = it.followers,
             following = it.following,
             location = it.location
+        )
+
+    fun mapUserSearchItemToUserFavorite(it: UserSearchItem): UserFavorite =
+        UserFavorite(
+            username = it.login!!,
+            name = "",
+            avatarUrl = it.avatarUrl,
+            followersUrl = "",
+            bio = "",
+            company = "",
+            publicRepos = 0,
+            followingUrl = "",
+            followers = 0,
+            following = 0,
+            location = ""
         )
 
 }

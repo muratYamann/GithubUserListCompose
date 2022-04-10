@@ -5,9 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,47 +22,62 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.trt.international.core.DataMapper
 import com.trt.international.core.model.UserDetail
 import com.trt.international.githubuserlistcompose.R
-import com.trt.international.githubuserlistcompose.customviews.CircularProgressBar
-import com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromResource
-import com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromURL
+import com.trt.international.githubuserlistcompose.screen.detail.viewmodel.DetailViewModel
 
 @Composable
 fun UserDetailScreen(
+    itemId: String,
     navController: NavController,
     userDetailViewModel: DetailViewModel = hiltViewModel()
 ) {
 
     LaunchedEffect(key1 = Unit, block = {
-        userDetailViewModel.getUserDetailFromApi("muratYamann")
+        userDetailViewModel.getUserDetailFromApi(itemId)
+        userDetailViewModel.getUserDetailFromDB(itemId)
     })
-    UserDetailContent(navController, userDetailViewModel)
+    UserDetailContent(navController, userDetailViewModel, itemId)
 
 }
 
 @Composable
-fun UserDetailContent(navController: NavController, searchViewModel: DetailViewModel) {
+fun UserDetailContent(
+    navController: NavController,
+    userDetailViewModel: DetailViewModel,
+    itemId: String
+) {
 
-    searchViewModel.state.observeAsState().value?.let {
-        CircularProgressBar(isDisplayed = it)
+    userDetailViewModel.state.observeAsState().value?.let {
+        com.trt.international.githubuserlistcompose.customviews.CircularProgressBar(isDisplayed = it)
     }
 
-    searchViewModel.error.observeAsState().value?.let {
+    userDetailViewModel.error.observeAsState().value?.let {
         if (it.isNotEmpty()) {
-            CircularProgressBar(isDisplayed = false)
+            com.trt.international.githubuserlistcompose.customviews.CircularProgressBar(isDisplayed = false)
         }
     }
 
-    val searchResult = searchViewModel.resultUserApi.observeAsState()
-    searchResult.value?.let { it ->
-        UserResultRowCard(navController, it)
+    val isHasOnFavorite = remember { mutableStateOf(false) }
+
+    val searchResult = userDetailViewModel.resultUserApi.observeAsState()
+    val searchSearchFromFavoriteDbResult = userDetailViewModel.resultUserDB.observeAsState()
+
+    searchSearchFromFavoriteDbResult.value?.let { list ->
+        list.any { it.name == itemId }
+        isHasOnFavorite.value = true
+    }
+
+    searchResult.value?.let { userDetail ->
+        UserResultRowCard(navController, userDetailViewModel, userDetail, isHasOnFavorite)
     } ?: run {
         SearchFailedItem()
     }
+
 }
 
 @Composable
@@ -78,7 +94,7 @@ fun SearchFailedItem() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        CustomImageViewFromResource(
+        com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromResource(
             modifier = Modifier.size(dimensionResource(id = R.dimen.search_icon_size)),
             image = R.drawable.icons_search
         )
@@ -93,7 +109,13 @@ fun SearchFailedItem() {
 }
 
 @Composable
-fun UserResultRowCard(navController: NavController, userItem: UserDetail) {
+fun UserResultRowCard(
+    navController: NavController,
+    detailViewModel: DetailViewModel,
+    userItem: UserDetail,
+    isHasOnFavorite: MutableState<Boolean>
+) {
+    val isClickedProfileIcon = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -104,36 +126,68 @@ fun UserResultRowCard(navController: NavController, userItem: UserDetail) {
         Icon(
             modifier = Modifier
                 .align(Alignment.End)
-                .size(60.dp)
-                .padding(top = 20.dp, end = 16.dp),
+                .size(50.dp)
+                .padding(top = 20.dp, end = 16.dp)
+                .clickable(enabled = true) {
+                    navController.navigateUp()
+                },
             painter = painterResource(id = R.drawable.icons_close),
             contentDescription = null,
             tint = colorResource(id = R.color.github_back_text_color)
         )
 
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 46.dp),
-            horizontalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            CustomImageViewFromURL(
-                modifier = Modifier
-                    .clickable(enabled = true) {
+            Box(
+                contentAlignment = Alignment.BottomEnd
+            ) {
 
+                com.trt.international.githubuserlistcompose.customviews.CustomImageViewFromURL(
+                    modifier = Modifier
+                        .clickable(enabled = true) {
+                            isClickedProfileIcon.value = true
+                        }
+                        .padding(17.dp)
+                        .size(120.dp)
+                        .border(width = 2.dp, color = Color.White, CircleShape)
+                        .clip(CircleShape),
+                    image = userItem.avatarUrl!!,
+                )
+
+                if (isClickedProfileIcon.value) {
+                    com.trt.international.githubuserlistcompose.customviews.CustomToast(message = "image clicked")
+                    Dialog(onDismissRequest = { isClickedProfileIcon.value = false }) {
+                        com.trt.international.githubuserlistcompose.customviews.CustomDialogUI(
+                            openDialogCustom = isClickedProfileIcon,
+                            image = userItem.avatarUrl!!
+                        )
                     }
-                    .size(90.dp)
-                    .border(width = 2.dp, color = Color.White, CircleShape)
-                    .clip(CircleShape),
-                image = userItem.avatarUrl!!,
-            )
 
-            Column(modifier = Modifier.padding(top = 8.dp, start = 8.dp)) {
+                }
+
+                val (isChecked, setChecked) = remember { mutableStateOf(false) }
+
+                com.trt.international.githubuserlistcompose.customviews.FavoriteButton(
+                    isChecked = isChecked,
+                    onClick = {
+                        setChecked(!isChecked)
+                        setFavoriteUser(detailViewModel, isChecked, userItem)
+                    }
+                )
+            }
+
+            Column(modifier = Modifier.padding(start = 8.dp)) {
                 Text(
-                    text = userItem.name!!,
+                    text = userItem.name ?: "",
                     color = colorResource(id = R.color.white),
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp
                 )
                 Text(
                     text = userItem.username,
@@ -143,8 +197,8 @@ fun UserResultRowCard(navController: NavController, userItem: UserDetail) {
         }
         Text(
             modifier = Modifier
-                .padding(top = 16.dp),
-            text = userItem.bio ?: "Bio",
+                .padding(start = 4.dp, top = 24.dp),
+            text = userItem.bio ?: "Empty Bio",
             color = colorResource(id = R.color.white)
         )
 
@@ -166,7 +220,6 @@ fun UserResultRowCard(navController: NavController, userItem: UserDetail) {
                 text = userItem.location ?: "Temp Location",
                 color = colorResource(id = R.color.white)
             )
-
         }
 
 
@@ -222,59 +275,27 @@ fun UserResultRowCard(navController: NavController, userItem: UserDetail) {
     }
 }
 
-@Composable
-fun AppDialog(
-    modifier: Modifier = Modifier,
-    avatarUrl: String,
-    dialogState: Boolean = false,
-    onDialogPositiveButtonClicked: (() -> Unit)? = null,
-    onDialogStateChange: ((Boolean) -> Unit)? = null,
-    onDismissRequest: (() -> Unit)? = null,
+private fun setFavoriteUser(
+    searchViewModel: DetailViewModel,
+    isChecked: Boolean,
+    userSearchItem: UserDetail
 ) {
-    val textPaddingAll = 24.dp
-    val buttonPaddingAll = 8.dp
-    val dialogShape = RoundedCornerShape(16.dp)
+    if (isChecked) {
+        val userFavorite = userSearchItem.let {
+            DataMapper.mapUserDetailToUserFavorite(it)
+        }
+        userFavorite.let {
+            searchViewModel.deleteUserFromDb(it)
+        }
 
-    if (dialogState) {
-        AlertDialog(
-            onDismissRequest = {
-                onDialogStateChange?.invoke(false)
-                onDismissRequest?.invoke()
-            },
-            title = null,
-            text = null,
-            buttons = {
+    } else {
+        val userFavorite = userSearchItem.let {
+            DataMapper.mapUserDetailToUserFavorite(it)
+        }
+        userFavorite.let {
+            searchViewModel.addUserToFavDB(it)
+        }
 
-                Column {
-                    CustomImageViewFromURL(
-                        modifier = Modifier.fillMaxWidth(),
-                        avatarUrl
-                    )
-                    Divider(color = MaterialTheme.colors.onSurface, thickness = 1.dp)
-
-                    Row(
-                        modifier = Modifier.padding(all = buttonPaddingAll),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        TextButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                onDialogStateChange?.invoke(false)
-                                onDialogPositiveButtonClicked?.invoke()
-                            }
-                        ) {
-                            Text(
-                                text = stringResource(R.string.dialog_ok),
-                                color = MaterialTheme.colors.onSurface
-                            )
-                        }
-                    }
-                }
-
-            },
-            properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = false),
-            modifier = modifier,
-            shape = dialogShape
-        )
     }
 }
+

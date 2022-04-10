@@ -1,10 +1,11 @@
-package com.trt.international.githubuserlistcompose.screen.detail
+package com.trt.international.githubuserlistcompose.screen.detail.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trt.international.core.model.UserDetail
+import com.trt.international.core.model.UserFavorite
 import com.trt.international.core.state.ResultState
 import com.trt.international.core.userusecase.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +28,40 @@ class DetailViewModel @Inject constructor(
     private val _resultUserDetailApi = MutableLiveData<UserDetail>()
     val resultUserApi: LiveData<UserDetail>
         get() = _resultUserDetailApi
+
+    private val _resultUserApi = MutableLiveData<List<UserFavorite>>()
+    val resultUserDB: LiveData<List<UserFavorite>>
+        get() = _resultUserApi
+
+    private val _resultInsertUserToDb = MutableLiveData<Boolean>()
+    val resultInsertUserDb: LiveData<Boolean>
+        get() = _resultInsertUserToDb
+
+    private val _resultDeleteFromDb = MutableLiveData<Boolean>()
+    val resultDeleteFromDb: LiveData<Boolean>
+        get() = _resultDeleteFromDb
+
+    fun addUserToFavDB(userFavoriteEntity: UserFavorite) {
+        viewModelScope.launch {
+            try {
+                searchUseCase.addUserToFavDB(userFavoriteEntity)
+                _resultInsertUserToDb.postValue(true)
+            } catch (e: Exception) {
+                _error.postValue(e.localizedMessage)
+            }
+        }
+    }
+
+    fun deleteUserFromDb(userFavoriteEntity: UserFavorite) {
+        viewModelScope.launch {
+            try {
+                searchUseCase.deleteUserFromFavDB(userFavoriteEntity)
+                _resultDeleteFromDb.postValue(true)
+            } catch (e: Exception) {
+                _error.postValue(e.localizedMessage)
+            }
+        }
+    }
 
     fun getUserDetailFromApi(query: String) {
         _state.value = true
@@ -52,4 +87,16 @@ class DetailViewModel @Inject constructor(
         }
     }
 
+    fun getUserDetailFromDB(username: String) {
+        _state.value = true
+        viewModelScope.launch {
+            searchUseCase.getFavoriteUserByUsername(username).collect {
+                _resultUserApi.postValue(it)
+                _state.value = false
+            }
+        }
+    }
+
+
 }
+

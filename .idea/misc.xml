@@ -4,11 +4,25 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/compose-model-1649373865658.xml" value="0.1" />
+        <entry key="../../../../layout/compose-model-1649542318281.xml" value="0.20092592592592592" />
+        <entry key="../../../../layout/compose-model-1649544652484.xml" value="0.1" />
+        <entry key="../../../../layout/compose-model-1649545402640.xml" value="0.2222222222222222" />
+        <entry key="../../../../layout/compose-model-1649545434173.xml" value="0.2222222222222222" />
+        <entry key="../../../../layout/compose-model-1649618778320.xml" value="0.125" />
+        <entry key="../../../../layout/compose-model-1649619509928.xml" value="1.0" />
+        <entry key="../../../../layout/compose-model-1649620558776.xml" value="0.2111111111111111" />
+        <entry key="../../../../layout/compose-model-1649620568601.xml" value="0.1" />
+        <entry key="../../../../layout/compose-model-1649620797298.xml" value="0.17222222222222222" />
+        <entry key="../../../../layout/compose-model-1649620995223.xml" value="0.17222222222222222" />
+        <entry key="../../../../layout/compose-model-1649621453411.xml" value="0.17222222222222222" />
+        <entry key="../../../../layout/compose-model-1649624602726.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/app_icon.xml" value="0.12" />
         <entry key="app/src/main/res/drawable/ic_back.xml" value="0.2435" />
         <entry key="app/src/main/res/drawable/ic_email.xml" value="0.1445" />
         <entry key="app/src/main/res/drawable/icon_close.xml" value="0.2085" />
         <entry key="app/src/main/res/drawable/icons_close.xml" value="0.202" />
         <entry key="app/src/main/res/drawable/icons_search.xml" value="0.118" />
+        <entry key="ui/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
       </map>
     </option>
   </component>
