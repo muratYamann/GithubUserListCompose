@@ -1,6 +1,5 @@
 package com.trt.international.githubuserlistcompose.screen.search
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,7 +14,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.trt.international.core.DataMapper
@@ -46,7 +43,7 @@ fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel 
             CustomSearchBar(
                 modifier = Modifier
                     .padding(
-                        vertical = 24.dp,
+                        vertical = dimensionResource(id = R.dimen.search_screen_custom_search_bar_vertical),
                         horizontal = dimensionResource(id = R.dimen.search_screen_search_bar_horizontal_padding)
                     )
                     .fillMaxWidth(),
@@ -59,7 +56,6 @@ fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel 
                     }
                 },
                 onDone = {
-                    Log.d("callService", "getUserFromApi()")
                     isSearched.value = true
                     searchViewModel.getUserFromApi(it)
                 })
@@ -67,16 +63,16 @@ fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel 
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 icon = { Icon(Icons.Filled.Favorite, "") },
-                text = { Text("Favorite List") },
+                text = { Text(stringResource(id = R.string.search_screen_floating_action_button_text)) },
                 onClick = { navController.navigate(Routes.FavoriteScreen.routes) },
-                elevation = FloatingActionButtonDefaults.elevation(8.dp)
+                elevation = FloatingActionButtonDefaults.elevation(dimensionResource(id = R.dimen.search_screen_floating_button_elevation))
             )
         },
+
         content = {
             val resultUserApi = searchViewModel.resultUserApi.observeAsState()
             if (resultUserApi.value.isNullOrEmpty()) {
                 LaunchedEffect(key1 = Unit) {
-                    Log.d("callService", "getDiscoverUserFromApi()")
                     searchViewModel.getDiscoverUserFromApi()
                 }
                 DefaultContent(navController, searchViewModel, isSearched.value)
@@ -116,8 +112,8 @@ fun DefaultContent(
             CustomToast(message = it, isLong = true)
             EmptyContentView(
                 navController,
-                buttonText = "Discover",
-                messageText = "Internal error. Please search new user \n\n error message $it ",
+                buttonText = stringResource(id = R.string.discover_button_text),
+                messageText = "${stringResource(id = R.string.search_screen_error_message)} $it ",
                 image = R.drawable.icons_search,
                 showActionButton = false
             )
@@ -131,8 +127,8 @@ fun DefaultContent(
             if (it.isNullOrEmpty()) {
                 EmptyContentView(
                     navController,
-                    buttonText = "Discover",
-                    messageText = "Your searched user list is empty."
+                    buttonText = stringResource(id = R.string.discover_button_text),
+                    messageText = stringResource(R.string.search_screen_searched_empty_message)
                 )
             } else {
                 UserResultRowCard(navController, searchViewModel, it)
@@ -145,8 +141,8 @@ fun DefaultContent(
             if (it.isNullOrEmpty()) {
                 EmptyContentView(
                     navController,
-                    buttonText = "Discover",
-                    messageText = "Your searched user list is empty."
+                    buttonText = stringResource(id = R.string.discover_button_text),
+                    messageText = stringResource(R.string.search_screen_searched_empty_message)
                 )
             } else {
                 UserResultRowCard(navController, searchViewModel, it)
@@ -170,14 +166,17 @@ fun UserResultRowCard(
         items(count = userList.size, itemContent = { itemIndex ->
             Card(
                 backgroundColor = colorResource(id = R.color.github_back_color),
-                elevation = 8.dp,
+                elevation = dimensionResource(id = R.dimen.search_screen_car_elevation),
                 modifier = Modifier
                     .clickable(enabled = true) {
                         navController.navigate(Routes.UserDetailScreen.itemId(itemId = "${userList[itemIndex].login}"))
                     }
                     .animateItemPlacement()
                     .height(dimensionResource(id = R.dimen.search_screen_card_height))
-                    .padding(horizontal = 16.dp, vertical = 4.dp)
+                    .padding(
+                        horizontal = dimensionResource(id = R.dimen.search_screen_card_padding_horizontal),
+                        vertical = dimensionResource(id = R.dimen.search_screen_card_padding_vertical)
+                    )
             ) {
                 Row(
                     modifier = Modifier
@@ -189,10 +188,10 @@ fun UserResultRowCard(
                     Row {
                         CustomImageViewFromURL(
                             modifier = Modifier
-                                .padding(start = 8.dp)
-                                .size(60.dp)
+                                .padding(start = dimensionResource(id = R.dimen.search_screen_image_padding_start))
+                                .size(dimensionResource(id = R.dimen.search_screen_image_size))
                                 .border(
-                                    width = 1.dp,
+                                    width = dimensionResource(id = R.dimen.search_screen_image_border_width),
                                     color = colorResource(id = R.color.github_back_text_color),
                                     CircleShape
                                 )
@@ -202,8 +201,8 @@ fun UserResultRowCard(
                         )
 
                         Text(
-                            modifier = Modifier.padding(start = 8.dp),
-                            text = userList[itemIndex].login!!,
+                            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.search_screen_username_padding_start)),
+                            text = userList[itemIndex].login ?: "",
                             color = colorResource(id = R.color.user_list_text_color)
                         )
                     }
@@ -216,11 +215,9 @@ fun UserResultRowCard(
                             setFavoriteUser(searchViewModel, isChecked, userList[itemIndex])
                         }
                     )
-
                 }
             }
         })
-
     }
 }
 
@@ -236,7 +233,6 @@ private fun setFavoriteUser(
         userFavorite.let {
             searchViewModel.deleteUserFromDb(it)
         }
-
     } else {
         val userFavorite = userSearchItem.let {
             DataMapper.mapUserSearchItemToUserFavorite(it)
@@ -244,12 +240,5 @@ private fun setFavoriteUser(
         userFavorite.let {
             searchViewModel.addUserToFavDB(it)
         }
-
     }
 }
-
-fun <T> SnapshotStateList<T>.swapList(newList: List<T>) {
-    clear()
-    addAll(newList)
-}
-

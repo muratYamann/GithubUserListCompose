@@ -2,10 +2,21 @@
     <string name="app_name">Github User</string>
 
     <!--search screen-->
-    <string name="search_screen_genre_card_title">En Popüler Türler</string>
     <string name="search_screen_search_bar_placeholder_text">Search</string>
-    <string name="search_failed_text">Aradığınızı içerik bulunamadı. Tekrar deneyin veya türlere göre keşfedin</string>
+    <string name="search_failed_text">Aradığınızı içerik bulunamadı. Tekrar deneyin</string>
+    <string name="search_screen_floating_action_button_text">Favorite List</string>
+    <string name="search_screen_error_message">Internal error. Please search new user \n\n error message</string>
+    <string name="search_screen_searched_empty_message">Your searched user list is empty.</string>
+
+    <string name="user_detail_screen_temp_location_text">Temp Location</string>
+    <string name="user_detail_empty_bio_text">Empty Bio</string>
+    <string name="user_detail_screen_follower_text">followers - </string>
+    <string name="user_detail_screen_following_text">following</string>
+    <string name="user_detail_screen_repository_text">Repositories </string>
+
     <string name="dialog_ok">OK</string>
     <string name="favorite_list">Favorite List</string>
+    <string name="discover_button_text">Discover</string>
+    <string name="favorite_screen_empty_view_message">Your favorite list is empty.</string>
 
 </resources>

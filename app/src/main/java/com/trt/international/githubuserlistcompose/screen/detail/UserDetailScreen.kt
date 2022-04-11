@@ -20,7 +20,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,12 +53,12 @@ fun UserDetailContent(
 ) {
 
     userDetailViewModel.state.observeAsState().value?.let {
-       CircularProgressBar(isDisplayed = it)
+        CircularProgressBar(isDisplayed = it)
     }
 
     userDetailViewModel.error.observeAsState().value?.let {
         if (it.isNotEmpty()) {
-         CircularProgressBar(isDisplayed = false)
+            CircularProgressBar(isDisplayed = false)
         }
     }
 
@@ -120,14 +119,17 @@ fun UserResultRowCard(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 16.dp)
+            .padding(start = dimensionResource(id = R.dimen.user_detail_screen_column_padding_start))
     ) {
 
         Icon(
             modifier = Modifier
                 .align(Alignment.End)
-                .size(50.dp)
-                .padding(top = 20.dp, end = 16.dp)
+                .size(dimensionResource(id = R.dimen.user_detail_screen_close_icon_size))
+                .padding(
+                    top = dimensionResource(id = R.dimen.user_detail_screen_close_icon_padding_top),
+                    end = dimensionResource(id = R.dimen.user_detail_screen_close_icon_padding_end)
+                )
                 .clickable(enabled = true) {
                     navController.navigateUp()
                 },
@@ -139,7 +141,7 @@ fun UserResultRowCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 46.dp),
+                .padding(top = dimensionResource(id = R.dimen.user_detail_screen_content_column_padding_top)),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -148,30 +150,32 @@ fun UserResultRowCard(
                 contentAlignment = Alignment.BottomEnd
             ) {
 
-               CustomImageViewFromURL(
+                CustomImageViewFromURL(
                     modifier = Modifier
                         .clickable(enabled = true) {
                             isClickedProfileIcon.value = true
                         }
-                        .padding(17.dp)
-                        .size(120.dp)
-                        .border(width = 2.dp, color = Color.White, CircleShape)
+                        .padding(dimensionResource(id = R.dimen.user_detail_screen_profile_image_padding))
+                        .size(dimensionResource(id = R.dimen.user_detail_screen_profile_image_size))
+                        .border(
+                            width = dimensionResource(id = R.dimen.user_detail_screen_profile_image_border_width),
+                            color = Color.White,
+                            CircleShape
+                        )
                         .clip(CircleShape),
                     image = userItem.avatarUrl!!,
                 )
 
                 if (isClickedProfileIcon.value) {
                     Dialog(onDismissRequest = { isClickedProfileIcon.value = false }) {
-                       CustomDialogUI(
+                        CustomDialogUI(
                             openDialogCustom = isClickedProfileIcon,
                             image = userItem.avatarUrl!!
                         )
                     }
-
                 }
 
                 val (isChecked, setChecked) = remember { mutableStateOf(false) }
-
                 FavoriteButton(
                     isChecked = isChecked,
                     onClick = {
@@ -181,12 +185,12 @@ fun UserResultRowCard(
                 )
             }
 
-            Column(modifier = Modifier.padding(start = 8.dp)) {
+            Column(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.user_detail_screen_user_name_column_padding_start))) {
                 Text(
                     text = userItem.name ?: "",
                     color = colorResource(id = R.color.white),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp
+                    fontSize = dimensionResource(id = R.dimen.user_detail_screen_user_name_text_size).value.sp
                 )
                 Text(
                     text = userItem.username,
@@ -196,27 +200,31 @@ fun UserResultRowCard(
         }
         Text(
             modifier = Modifier
-                .padding(start = 4.dp, top = 24.dp),
-            text = userItem.bio ?: "Empty Bio",
+                .padding(
+                    start = dimensionResource(id = R.dimen.user_detail_screen_bio_padding_start),
+                    top = dimensionResource(id = R.dimen.user_detail_screen_bio_padding_top)
+                ),
+            text = userItem.bio ?: stringResource(R.string.user_detail_empty_bio_text),
             color = colorResource(id = R.color.white)
         )
 
         Row(
             modifier = Modifier
                 .wrapContentHeight()
-                .padding(top = 8.dp),
+                .padding(top = dimensionResource(id = R.dimen.user_detail_screen_row_info_padding_top)),
         ) {
             Icon(
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .padding(end = 4.dp)
+                    .padding(end = dimensionResource(id = R.dimen.user_detail_screen_location_icon_padding_end))
                     .size(dimensionResource(id = R.dimen.ic_back_size)),
                 painter = painterResource(id = R.drawable.ic_location),
                 contentDescription = null,
                 tint = colorResource(id = R.color.github_back_text_color)
             )
             Text(
-                text = userItem.location ?: "Temp Location",
+                text = userItem.location
+                    ?: stringResource(R.string.user_detail_screen_temp_location_text),
                 color = colorResource(id = R.color.white)
             )
         }
@@ -225,23 +233,24 @@ fun UserResultRowCard(
         Row(
             modifier = Modifier
                 .wrapContentHeight()
-                .padding(top = 8.dp),
+                .padding(top = dimensionResource(id = R.dimen.user_detail_screen_row_follower_padding_top)),
         ) {
             Icon(
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .padding(end = 4.dp)
+                    .padding(end = dimensionResource(id = R.dimen.user_detail_screen_icon_follower_padding_end))
                     .size(dimensionResource(id = R.dimen.ic_back_size)),
                 painter = painterResource(id = R.drawable.ic_people),
                 contentDescription = null,
                 tint = colorResource(id = R.color.github_back_text_color)
             )
+
             Text(
-                text = "${userItem.followers ?: 0} followers - ",
+                text = "${userItem.followers ?: 0}  ${stringResource(id = R.string.user_detail_screen_follower_text)} ",
                 color = colorResource(id = R.color.white)
             )
             Text(
-                text = "${userItem.following ?: 0} following",
+                text = "${userItem.following ?: 0} ${stringResource(id = R.string.user_detail_screen_following_text)} ",
                 color = colorResource(id = R.color.white)
             )
         }
@@ -249,28 +258,29 @@ fun UserResultRowCard(
         Row(
             modifier = Modifier
                 .wrapContentHeight()
-                .padding(top = 8.dp),
+                .padding(top = dimensionResource(id = R.dimen.user_detail_screen_repository_rop_padding_top)),
         ) {
             Text(
-                text = "Repositories ",
+                text = stringResource(R.string.user_detail_screen_repository_text),
                 color = colorResource(id = R.color.white)
             )
 
             Surface(
                 color = colorResource(id = R.color.github_back_text_color),
-                shape = RoundedCornerShape(16.dp),
-                elevation = 2.dp
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.user_detail_screen_surface_round_corner_shape)),
+                elevation = dimensionResource(id = R.dimen.user_detail_screen_surface_elevation)
             ) {
                 Text(
-                    modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
+                    modifier = Modifier.padding(
+                        vertical = dimensionResource(id = R.dimen.user_detail_screen_repository_text_vertical),
+                        horizontal = dimensionResource(id = R.dimen.user_detail_screen_repository_text_horizontal)
+                    ),
                     text = userItem.publicRepos.toString(),
-                    fontSize = 12.sp,
+                    fontSize = dimensionResource(id = R.dimen.user_detail_screen_repository_text_size).value.sp,
                     color = colorResource(id = R.color.white)
                 )
             }
-
         }
-
     }
 }
 
