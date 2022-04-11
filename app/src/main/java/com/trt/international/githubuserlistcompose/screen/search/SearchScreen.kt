@@ -68,6 +68,7 @@ fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel 
                 elevation = FloatingActionButtonDefaults.elevation(dimensionResource(id = R.dimen.search_screen_floating_button_elevation))
             )
         },
+
         content = {
             val resultUserApi = searchViewModel.resultUserApi.observeAsState()
             if (resultUserApi.value.isNullOrEmpty()) {
