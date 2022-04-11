@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="favorite_screen_grid_cell_count">2</integer>
+</resources>
