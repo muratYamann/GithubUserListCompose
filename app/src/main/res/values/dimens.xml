@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <dimen name="all_pages_padding">16dp</dimen>
+    <dimen name="ic_back_size">16dp</dimen>
+
+    <!-- navigation top bar -->
+    <dimen name="topBar_height">54dp</dimen>
+    <dimen name="ic_navigate_padding_end">8dp</dimen>
+    <dimen name="topBar_title_text_size">14sp</dimen>
+    <dimen name="topBar_action_button_padding_horizontal">10dp</dimen>
+    <dimen name="app_bar_icon_size">32dp</dimen>
+    <dimen name="empty_view_icon_size">32dp</dimen>
+    <dimen name="textField_radius">8dp</dimen>
+    <dimen name="search_text_size">14sp</dimen>
+
     <!--search screen-->
     <dimen name="search_screen_layout_padding">8dp</dimen>
     <dimen name="search_screen_search_bar_horizontal_padding">8dp</dimen>
@@ -22,10 +35,6 @@
     <dimen name="search_screen_show_card_vertical_grid_layout_height">300dp</dimen>
     <dimen name="search_screen_show_card_image_height">100dp</dimen>
     <dimen name="search_screen_show_card_image_bottom_padding">16dp</dimen>
-    <dimen name="favorite_screen_card_bottom_padding">8dp</dimen>
-    <dimen name="favorite_screen_card_start_padding">8dp</dimen>
-    <dimen name="favorite_screen_card_top_padding">8dp</dimen>
-    <dimen name="favorite_screen_card_end_padding">8dp</dimen>
     <dimen name="search_screen_show_card_image_start_padding">8dp</dimen>
     <dimen name="search_screen_show_card_image_end_padding">8dp</dimen>
     <dimen name="search_screen_show_card_image_radius">8dp</dimen>
@@ -43,20 +52,52 @@
     <dimen name="search_screen_failed_text_horizontal_padding">68dp</dimen>
     <dimen name="search_screen_failed_text_bottom_padding">24dp</dimen>
     <dimen name="search_icon_size">68dp</dimen>
-    <dimen name="user_detail_screen_card_height">360dp</dimen>
-    <dimen name="user_detail_screen_card_radius">50dp</dimen>
 
-    <dimen name="all_pages_padding">16dp</dimen>
-    <dimen name="ic_back_size">16dp</dimen>
-    <!-- navigation top bar -->
-    <dimen name="topBar_height">54dp</dimen>
-    <dimen name="ic_navigate_padding_end">8dp</dimen>
-    <dimen name="topBar_title_text_size">14sp</dimen>
-    <dimen name="topBar_action_button_padding_horizontal">10dp</dimen>
-    <dimen name="app_bar_icon_size">32dp</dimen>
-    <dimen name="favori_card_item_height">200dp</dimen>
-    <dimen name="empty_view_icon_size">32dp</dimen>
-    <dimen name="textField_radius">8dp</dimen>
-    <dimen name="search_text_size">14sp</dimen>
+    <!-- favorite -->
+    <dimen name="favorite_screen_card_elevation">8dp</dimen>
+    <dimen name="favorite_screen_card_border_radius">16dp</dimen>
+    <dimen name="favorite_screen_card_border_with">1dp</dimen>
+    <dimen name="favorite_screen_image_size">60dp</dimen>
+    <dimen name="favorite_screen_username_text_padding_top">8dp</dimen>
+    <dimen name="favorite_screen_username_text_padding_bottom">16dp</dimen>
+    <dimen name="favorite_screen_card_bottom_padding">8dp</dimen>
+    <dimen name="favorite_screen_card_start_padding">8dp</dimen>
+    <dimen name="favorite_screen_card_top_padding">8dp</dimen>
+    <dimen name="favorite_screen_card_end_padding">8dp</dimen>
+
+    <!-- user detail -->
+    <dimen name="user_detail_screen_close_icon_padding_top">20dp</dimen>
+    <dimen name="user_detail_screen_close_icon_padding_end">16dp</dimen>
+    <dimen name="user_detail_screen_column_padding_start">16dp</dimen>
+    <dimen name="user_detail_screen_close_icon_size">50dp</dimen>
+    <dimen name="user_detail_screen_content_column_padding_top">46dp</dimen>
+    <dimen name="user_detail_screen_profile_image_padding">16dp</dimen>
+    <dimen name="user_detail_screen_profile_image_size">120dp</dimen>
+    <dimen name="user_detail_screen_profile_image_border_width">2dp</dimen>
+    <dimen name="user_detail_screen_user_name_column_padding_start">8dp</dimen>
+    <dimen name="user_detail_screen_user_name_text_size">22sp</dimen>
+    <dimen name="user_detail_screen_bio_padding_start">4dp</dimen>
+    <dimen name="user_detail_screen_bio_padding_top">24dp</dimen>
+    <dimen name="user_detail_screen_row_info_padding_top">8dp</dimen>
+    <dimen name="user_detail_screen_location_icon_padding_end">4dp</dimen>
+    <dimen name="user_detail_screen_row_follower_padding_top">8dp</dimen>
+    <dimen name="user_detail_screen_icon_follower_padding_end">4dp</dimen>
+    <dimen name="user_detail_screen_surface_round_corner_shape">16dp</dimen>
+    <dimen name="user_detail_screen_surface_elevation">2dp</dimen>
+    <dimen name="user_detail_screen_repository_text_vertical">2dp</dimen>
+    <dimen name="user_detail_screen_repository_text_horizontal">4dp</dimen>
+    <dimen name="user_detail_screen_repository_text_size">12sp</dimen>
+    <dimen name="user_detail_screen_repository_rop_padding_top">8dp</dimen>
+
+    <!-- search screen -->
+    <dimen name="search_screen_custom_search_bar_vertical">24dp</dimen>
+    <dimen name="search_screen_floating_button_elevation">8dp</dimen>
+    <dimen name="search_screen_car_elevation">8dp</dimen>
+    <dimen name="search_screen_card_padding_horizontal">16dp</dimen>
+    <dimen name="search_screen_card_padding_vertical">4dp</dimen>
+    <dimen name="search_screen_image_padding_start">8dp</dimen>
+    <dimen name="search_screen_image_size">60dp</dimen>
+    <dimen name="search_screen_image_border_width">1dp</dimen>
+    <dimen name="search_screen_username_padding_start">8dp</dimen>
 
 </resources>

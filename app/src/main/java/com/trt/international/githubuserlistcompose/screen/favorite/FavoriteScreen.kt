@@ -22,8 +22,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.trt.international.core.model.UserFavorite
@@ -74,12 +74,15 @@ fun ObserveFavoriteList(navController: NavController, favoriteViewModel: Favorit
     favoriteUserList.value?.let { it ->
         CircularProgressBar(isDisplayed = false)
         if (it.isNullOrEmpty()) {
-            EmptyContentView(navController, "Discover", "Your favorite list is empty.")
+            EmptyContentView(
+                navController, stringResource(R.string.discover_button_text), stringResource(
+                    R.string.favorite_screen_empty_view_message
+                )
+            )
         } else {
             UserResultRowCard(navController, favoriteViewModel, it)
         }
     }
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -91,7 +94,7 @@ fun UserResultRowCard(
 ) {
 
     LazyVerticalGrid(
-        cells = GridCells.Fixed(2),
+        cells = GridCells.Fixed(integerResource(id = R.integer.favorite_screen_grid_cell_count)),
         modifier = Modifier
             .fillMaxSize()
     )
@@ -99,7 +102,7 @@ fun UserResultRowCard(
         items(count = userList.size, itemContent = { itemIndex ->
             Card(
                 backgroundColor = colorResource(id = R.color.github_favorite_card_color),
-                elevation = 8.dp,
+                elevation = dimensionResource(id = R.dimen.favorite_screen_card_elevation),
                 modifier = Modifier
                     .clickable(enabled = true) {
                         navController.navigate(Routes.UserDetailScreen.itemId(userList[itemIndex].username))
@@ -114,11 +117,11 @@ fun UserResultRowCard(
                         end = dimensionResource(id = R.dimen.favorite_screen_card_end_padding)
                     )
                     .border(
-                        1.dp,
+                        dimensionResource(id = R.dimen.favorite_screen_card_border_with),
                         color = colorResource(id = R.color.github_favorite_card_color),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.favorite_screen_card_border_radius))
                     )
-                    .clip(RoundedCornerShape(16.dp)),
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.favorite_screen_card_border_radius))),
             ) {
                 Column(
                     modifier = Modifier
@@ -138,9 +141,9 @@ fun UserResultRowCard(
 
                     CustomImageViewFromURL(
                         modifier = Modifier
-                            .size(60.dp)
+                            .size(dimensionResource(id = R.dimen.favorite_screen_image_size))
                             .border(
-                                width = 1.dp,
+                                width = dimensionResource(id = R.dimen.favorite_screen_card_border_with),
                                 color = colorResource(id = R.color.github_back_text_color),
                                 CircleShape
                             )
@@ -151,16 +154,17 @@ fun UserResultRowCard(
 
                     Text(
                         modifier = Modifier
-                            .padding(top = 8.dp, bottom = 16.dp)
+                            .padding(
+                                top = dimensionResource(id = R.dimen.favorite_screen_username_text_padding_top),
+                                bottom = dimensionResource(id = R.dimen.favorite_screen_username_text_padding_bottom)
+                            )
                             .align(Alignment.CenterHorizontally),
                         text = userList[itemIndex].username,
                         color = colorResource(id = R.color.user_list_text_color)
                     )
                 }
             }
-
         })
-
     }
 }
 
